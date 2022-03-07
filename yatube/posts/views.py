@@ -131,13 +131,21 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    author = User.objects.get(username=username)
-    Follow.objects.create(user=request.user, author=author)
-    return redirect('posts:follow_index')
-
+    if request.user.username != username:
+        print(username)
+        print(request.user)
+        author = User.objects.get(username=username)
+        Follow.objects.create(user=request.user, author=author)
+        return redirect('posts:follow_index')
+    print('пошло как')
+    return redirect('posts:profile', username)
 
 @ login_required
 def profile_unfollow(request, username):
-    author = User.objects.get(username=username)
-    Follow.objects.filter(user=request.user, author=author.id).delete()
-    return redirect('posts:follow_index')
+    if request.user.username != username:
+        print(username)
+        print(request.user)
+        author = User.objects.get(username=username)
+        Follow.objects.filter(user=request.user, author=author.id).delete()
+        return redirect('posts:follow_index')
+    return redirect('posts:profile', username)

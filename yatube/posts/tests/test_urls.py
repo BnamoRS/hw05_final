@@ -40,7 +40,7 @@ class URLTest(TestCase):
         )
         cls.unexisting_url = '/unexisting_page/'
         cls.name_url_comments = (
-            f'/posts/{cls.post.id}/comments/',
+            f'/posts/{cls.post.id}/comment/',
             'posts/post_detail.html',
         )
 
@@ -145,7 +145,7 @@ class URLTest(TestCase):
         post_id = URLTest.post.id
         self.assertRedirects(
             response,
-            f'/auth/login/?next=/posts/{post_id}/comments/',
+            f'/auth/login/?next=/posts/{post_id}/comment/',
             HTTPStatus.FOUND,
             HTTPStatus.OK,
         )

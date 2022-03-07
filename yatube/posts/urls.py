@@ -14,13 +14,13 @@ urlpatterns = [
         name="profile_follow",
     ),
     path(
-        "profile/<str:username>/unfollow",
+        "profile/<str:username>/unfollow/",
         views.profile_unfollow,
         name="profile_unfollow",
     ),
     path("profile/<str:username>/", views.profile, name="profile"),
     path(
-        "posts/<int:post_id>/comments/",
+        "posts/<int:post_id>/comment/",
         views.add_comment,
         name="add_comment",
     ),

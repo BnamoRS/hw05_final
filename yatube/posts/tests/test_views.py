@@ -268,7 +268,7 @@ class ViewsTests(TestCase):
         )
         self.assertRedirects(
             self.client.get(self.name_url_comments),
-            f'/auth/login/?next=/posts/{post_id}/comments/',
+            f'/auth/login/?next=/posts/{post_id}/comment/',
             HTTPStatus.FOUND,
             HTTPStatus.OK,
         )

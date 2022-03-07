@@ -55,7 +55,7 @@ class Post(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(
         Post,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='comments',
         blank=True,
         null=True,
@@ -71,20 +71,20 @@ class Comment(models.Model):
         verbose_name="Текст комментария",
         help_text="Напишите комментарий",
     )
-    created = models.DateField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)
 
 
 class Follow(models.Model):
     user = models.ForeignKey(
         User,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='follower',
         blank=True,
         null=True,
     )
     author = models.ForeignKey(
         User,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='following',
         blank=True,
         null=True,
