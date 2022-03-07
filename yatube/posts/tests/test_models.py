@@ -10,15 +10,15 @@ class PostModelTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='auth')
+        cls.user = User.objects.create_user(username="auth")
         cls.group = Group.objects.create(
-            title='Тестовая группа',
-            slug='grouptest',
-            description='Тестовое описание',
+            title="Тестовая группа",
+            slug="grouptest",
+            description="Тестовое описание",
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text='просто тестовый пост',
+            text="просто тестовый пост",
         )
 
     def test_models_have_correct_objects_names_post(self):
@@ -32,5 +32,6 @@ class PostModelTest(TestCase):
         for model_str, expected_value in models_str.items():
             with self.subTest():
                 self.assertEqual(
-                    model_str.__str__(), expected_value,
+                    model_str.__str__(),
+                    expected_value,
                 )

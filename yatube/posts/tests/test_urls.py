@@ -12,36 +12,36 @@ class URLTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.author_post = User.objects.create_user(username='HasNoNameAuthor')
-        cls.user = User.objects.create_user(username='HasNoName')
+        cls.author_post = User.objects.create_user(username="HasNoNameAuthor")
+        cls.user = User.objects.create_user(username="HasNoName")
         cls.group = Group.objects.create(
-            title='Тестовая группа',
-            slug='group_test',
-            description='Тестовое описание группы',
+            title="Тестовая группа",
+            slug="group_test",
+            description="Тестовое описание группы",
         )
         cls.post = Post.objects.create(
             author=cls.author_post,
-            text='Тестовый пост',
+            text="Тестовый пост",
             id=33,
         )
         cls.public_urls = (
-            ('/', 'posts/index.html'),
-            (f'/group/{cls.group.slug}/', 'posts/group_list.html'),
-            (f'/profile/{cls.author_post.username}/', 'posts/profile.html'),
-            (f'/posts/{cls.post.id}/', 'posts/post_detail.html'),
+            ("/", "posts/index.html"),
+            (f"/group/{cls.group.slug}/", "posts/group_list.html"),
+            (f"/profile/{cls.author_post.username}/", "posts/profile.html"),
+            (f"/posts/{cls.post.id}/", "posts/post_detail.html"),
         )
         cls.not_public_urls = (
-            (f'/posts/{cls.post.id}/edit/',
-                'posts/create_post.html',
-                f'/posts/{cls.post.id}/'),
-            ('/create/',
-                'posts/create_post.html',
-                '/auth/login/?next=/create/'),
+            (
+                f"/posts/{cls.post.id}/edit/",
+                "posts/create_post.html",
+                f"/posts/{cls.post.id}/",
+            ),
+            ("/create/", "posts/create_post.html", "/auth/login/?next=/create/"),
         )
-        cls.unexisting_url = '/unexisting_page/'
+        cls.unexisting_url = "/unexisting_page/"
         cls.name_url_comments = (
-            f'/posts/{cls.post.id}/comment/',
-            'posts/post_detail.html',
+            f"/posts/{cls.post.id}/comment/",
+            "posts/post_detail.html",
         )
 
     def setUp(self):
@@ -104,10 +104,7 @@ class URLTest(TestCase):
             response = self.guest_client.get(url)
             with self.subTest(url=url):
                 self.assertRedirects(
-                    response,
-                    url_redirect,
-                    HTTPStatus.FOUND,
-                    HTTPStatus.OK
+                    response, url_redirect, HTTPStatus.FOUND, HTTPStatus.OK
                 )
 
     def test_template_public_urls_authorized_client(self):
@@ -145,7 +142,7 @@ class URLTest(TestCase):
         post_id = URLTest.post.id
         self.assertRedirects(
             response,
-            f'/auth/login/?next=/posts/{post_id}/comment/',
+            f"/auth/login/?next=/posts/{post_id}/comment/",
             HTTPStatus.FOUND,
             HTTPStatus.OK,
         )
@@ -156,7 +153,7 @@ class URLTest(TestCase):
         post_id = URLTest.post.id
         self.assertRedirects(
             response,
-            f'/posts/{post_id}/',
+            f"/posts/{post_id}/",
             HTTPStatus.FOUND,
             HTTPStatus.OK,
         )

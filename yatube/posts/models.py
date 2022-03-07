@@ -1,5 +1,3 @@
-
-
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
@@ -37,8 +35,8 @@ class Post(models.Model):
         help_text="Группа для размещения поста",
     )
     image = models.ImageField(
-        'Картинка',
-        upload_to='posts/',
+        "Картинка",
+        upload_to="posts/",
         blank=True,
     )
 
@@ -56,11 +54,11 @@ class Comment(models.Model):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        related_name='comments',
+        related_name="comments",
         blank=True,
         null=True,
-        verbose_name='Комментарий',
-        help_text='Оставьте комментарий',
+        verbose_name="Комментарий",
+        help_text="Оставьте комментарий",
     )
     author = models.ForeignKey(
         User,
@@ -78,14 +76,14 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='follower',
+        related_name="follower",
         blank=True,
         null=True,
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following',
+        related_name="following",
         blank=True,
         null=True,
     )

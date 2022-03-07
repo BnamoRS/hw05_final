@@ -23,11 +23,11 @@ class FormTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create(username='NoName')
+        cls.user = User.objects.create(username="NoName")
         cls.group = Group.objects.create(
-            title='Тестовая группа',
-            slug='test_slug',
-            description='Описание тестовой группы',
+            title="Тестовая группа",
+            slug="test_slug",
+            description="Описание тестовой группы",
         )
 
     @classmethod
@@ -40,23 +40,21 @@ class FormTest(TestCase):
         self.autorized_client = Client()
         self.autorized_client.force_login(FormTest.user)
         self.small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
+            b"\x47\x49\x46\x38\x39\x61\x02\x00"
+            b"\x01\x00\x80\x00\x00\x00\x00\x00"
+            b"\xFF\xFF\xFF\x21\xF9\x04\x00\x00"
+            b"\x00\x00\x00\x2C\x00\x00\x00\x00"
+            b"\x02\x00\x01\x00\x00\x02\x02\x0C"
+            b"\x0A\x00\x3B"
         )
         self.uploaded = SimpleUploadedFile(
-            name='small.gif',
-            content=self.small_gif,
-            content_type='image/gif'
+            name="small.gif", content=self.small_gif, content_type="image/gif"
         )
         self.form = {
-            'text': 'Новый тестовый пост',
-            'author': FormTest.user,
-            'group': self.group.id,
-            'image': self.uploaded,
+            "text": "Новый тестовый пост",
+            "author": FormTest.user,
+            "group": self.group.id,
+            "image": self.uploaded,
         }  # Добавить в форму поле картинки
 
     def correct_fields_post(self, post):
@@ -64,15 +62,16 @@ class FormTest(TestCase):
         fields = (
             (post.author, FormTest.user),
             (post.group, FormTest.group),
-            (post.text, self.form['text']),
-            (post.image.size, self.form['image'].size),
+            (post.text, self.form["text"]),
+            (post.image.size, self.form["image"].size),
         )  # Добавить поле для проверки картинки
         return fields
-# Добавить тест картинки здесь
+
+    # Добавить тест картинки здесь
     def test_create_post_is_valid_form(self):
         """Создан новый пост при передаче валидной формы."""
         response = self.autorized_client.post(
-            reverse('posts:post_create'),
+            reverse("posts:post_create"),
             self.form,
         )
         new_post = Post.objects.get(id=1)
@@ -83,19 +82,19 @@ class FormTest(TestCase):
         self.assertEqual(Post.objects.all().count(), self.CREATE_POST_IN_BASE)
         self.assertRedirects(
             response,
-            f'/profile/{new_post.author}/',
+            f"/profile/{new_post.author}/",
             HTTPStatus.FOUND,
             HTTPStatus.OK,
         )
 
     def test_not_create_post_not_authorized_client(self):
         """Неавторизованный пользователь не может создать пост."""
-        response = self.client.post(reverse('posts:post_create'), self.form)
+        response = self.client.post(reverse("posts:post_create"), self.form)
         posts_count = Post.objects.count()
         self.assertEqual(posts_count, self.NOT_CREATE_POST_IN_BASE)
         self.assertRedirects(
             response,
-            '/auth/login/?next=/create/',
+            "/auth/login/?next=/create/",
             HTTPStatus.FOUND,
             HTTPStatus.OK,
         )
@@ -103,14 +102,13 @@ class FormTest(TestCase):
     def test_edit_post_is_valid_form(self):
         """При отправке валидной формы пост редактируется, новый не создан."""
         post = Post.objects.create(
-            text='Пост для редактирования',
+            text="Пост для редактирования",
             author=FormTest.user,
         )
         posts_count = Post.objects.count()
         posts_group_count = FormTest.group.posts.count()
         self.autorized_client.post(
-            reverse('posts:post_edit', args=[post.id]),
-            self.form
+            reverse("posts:post_edit", args=[post.id]), self.form
         )
         post_edit = Post.objects.get(id=post.id)
         posts_count_after_edit = Post.objects.count()
@@ -121,6 +119,5 @@ class FormTest(TestCase):
                 self.assertEqual(post_fields, test_fields)
         self.assertEqual(posts_count, posts_count_after_edit)
         self.assertEqual(
-            posts_group_count + self.CREATE_POST_IN_BASE,
-            posts_group_count_after_edit
+            posts_group_count + self.CREATE_POST_IN_BASE, posts_group_count_after_edit
         )

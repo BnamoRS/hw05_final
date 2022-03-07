@@ -42,8 +42,8 @@ def profile(request, username):
     page_obj = paginator.get_page(page_number)
     following = True
     followers = Follow.objects.filter(
-        author_id=author.id,
-        user_id=request.user.id).count()
+        author_id=author.id, user_id=request.user.id
+    ).count()
     if followers == 0:
         following = False
     context = {
@@ -85,11 +85,7 @@ def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if request.user != post.author:
         return redirect(post)
-    form = PostForm(
-        request.POST or None,
-        files=request.FILES or None,
-        instance=post
-    )
+    form = PostForm(request.POST or None, files=request.FILES or None, instance=post)
     if form.is_valid():
         form.save()
         return redirect(post)
@@ -116,13 +112,14 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    subscriber = get_object_or_404(User, username=request.user)  # кто подписан.
-    authors = subscriber.follower.all()  # достаем авторов на кого подписан.
-    page_obj = []
-    # в цикле достаем  всех авторов по очереди и добавляем в список их посты
-    # попробовать в консоли достать список постов и посмотреть как это выглядит
+    subscriber = get_object_or_404(User, username=request.user)
+    authors = subscriber.follower.all()
+    post_list = []
     for author in authors:
-        page_obj += Post.objects.filter(author=author.author_id)
+        post_list += Post.objects.filter(author=author.author_id)
+    paginator = Paginator(post_list, COUNT_POST_IN_LIST)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
     context = {
         "page_obj": page_obj,
     }
@@ -131,21 +128,20 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    if request.user.username != username:
-        print(username)
-        print(request.user)
-        author = User.objects.get(username=username)
+    author = User.objects.prefetch_related("following").get(username=username)
+    if request.user.username == username:
+        return redirect("posts:profile", username)
+    elif author.following.filter(user=request.user).exists():
+        return redirect("posts:follow_index")
+    else:
         Follow.objects.create(user=request.user, author=author)
-        return redirect('posts:follow_index')
-    print('пошло как')
-    return redirect('posts:profile', username)
+        return redirect("posts:follow_index")
 
-@ login_required
+
+@login_required
 def profile_unfollow(request, username):
     if request.user.username != username:
-        print(username)
-        print(request.user)
         author = User.objects.get(username=username)
         Follow.objects.filter(user=request.user, author=author.id).delete()
-        return redirect('posts:follow_index')
-    return redirect('posts:profile', username)
+        return redirect("posts:follow_index")
+    return redirect("posts:profile", username)
