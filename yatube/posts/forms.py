@@ -1,5 +1,4 @@
 from django import forms
-from pyexpat import model
 
 from .models import Comment, Post
 

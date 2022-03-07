@@ -31,12 +31,12 @@ class URLTest(TestCase):
             (f"/posts/{cls.post.id}/", "posts/post_detail.html"),
         )
         cls.not_public_urls = (
-            (
-                f"/posts/{cls.post.id}/edit/",
+            (f"/posts/{cls.post.id}/edit/",
                 "posts/create_post.html",
-                f"/posts/{cls.post.id}/",
-            ),
-            ("/create/", "posts/create_post.html", "/auth/login/?next=/create/"),
+                f"/posts/{cls.post.id}/"),
+            ("/create/",
+                "posts/create_post.html",
+                "/auth/login/?next=/create/"),
         )
         cls.unexisting_url = "/unexisting_page/"
         cls.name_url_comments = (

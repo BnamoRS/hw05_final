@@ -119,5 +119,6 @@ class FormTest(TestCase):
                 self.assertEqual(post_fields, test_fields)
         self.assertEqual(posts_count, posts_count_after_edit)
         self.assertEqual(
-            posts_group_count + self.CREATE_POST_IN_BASE, posts_group_count_after_edit
+            posts_group_count + self.CREATE_POST_IN_BASE,
+            posts_group_count_after_edit
         )

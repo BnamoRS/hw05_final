@@ -61,18 +61,16 @@ class ViewsTests(TestCase):
         )
         cls.name_urls_public_template = (
             (reverse("posts:index"), "posts/index.html"),
-            (
-                reverse("posts:group_list", args=[cls.post.group.slug]),
-                "posts/group_list.html",
-            ),
-            (reverse("posts:profile", args=[cls.post.author]), "posts/profile.html"),
-            (
-                reverse("posts:post_detail", args=[cls.post.id]),
-                "posts/post_detail.html",
-            ),
+            (reverse("posts:group_list", args=[cls.post.group.slug]),
+                "posts/group_list.html"),
+            (reverse("posts:profile", args=[cls.post.author]),
+                "posts/profile.html"),
+            (reverse("posts:post_detail", args=[cls.post.id]),
+                "posts/post_detail.html"),
         )
         cls.name_urls_not_public_template = (
-            (reverse("posts:post_edit", args=[cls.post.id]), "posts/create_post.html"),
+            (reverse("posts:post_edit", args=[cls.post.id]),
+                "posts/create_post.html"),
             (reverse("posts:post_create"), "posts/create_post.html"),
         )
         cls.name_urls_paginator_template = (
@@ -81,15 +79,16 @@ class ViewsTests(TestCase):
                 reverse("posts:group_list", args=[cls.post.group.slug]),
                 "posts/group_list.html",
             ),
-            (reverse("posts:profile", args=[cls.post.author]), "posts/profile.html"),
+            (reverse("posts:profile", args=[cls.post.author]),
+                "posts/profile.html"),
         )
-        cls.name_url_comments = reverse("posts:add_comment", args=[cls.post.id])
+        cls.name_url_comments = reverse(
+            "posts:add_comment", args=[cls.post.id])
         cls.name_url_follow = (
-            (reverse("posts:profile_follow", args=[cls.post.author]), cls.ADD_FOLLOWER),
-            (
-                reverse("posts:profile_unfollow", args=[cls.post.author]),
-                cls.DELETE_FOLLOWER,
-            ),
+            (reverse("posts:profile_follow", args=[cls.post.author]),
+                cls.ADD_FOLLOWER),
+            (reverse("posts:profile_unfollow", args=[cls.post.author]),
+                cls.DELETE_FOLLOWER),
         )
 
     @classmethod
@@ -190,7 +189,8 @@ class ViewsTests(TestCase):
                 with self.subTest(url_name=url_name):
                     response = self.client.get(url_name, {"page": page})
                     self.assertEqual(
-                        response.context["page_obj"].paginator.count, self.POSTS_ALL
+                        response.context["page_obj"].paginator.count,
+                        self.POSTS_ALL
                     )
                     self.assertEqual(
                         len(response.context["page_obj"].object_list), count
@@ -249,7 +249,8 @@ class ViewsTests(TestCase):
             response.context["comments"].get(text=comment_text["text"]).text
         )
         self.assertEqual(
-            len(response.context["comments"]), count_comment + self.ADD_POST_OR_COMMENT
+            len(response.context["comments"]),
+            count_comment + self.ADD_POST_OR_COMMENT
         )
         self.assertEqual(response_comment_text, comment_text["text"])
 
@@ -276,19 +277,23 @@ class ViewsTests(TestCase):
         posts_in_index_cont = response.context["page_obj"].paginator.count
         Post.objects.get(id=ViewsTests.post.id).delete()
         posts_in_base_count_after_removal = Post.objects.count()
-        posts_in_index_cont_after_removal = response.context["page_obj"].paginator.count
-        response_after_removal = self.client.get(self.name_urls_public_template[0][0])
+        posts_in_index_cont_after_removal = (
+            response.context["page_obj"].paginator.count)
+        response_after_removal = (
+            self.client.get(self.name_urls_public_template[0][0]))
         posts_in_base_count_after_response = Post.objects.count()
-        posts_in_index_cont_after_response = response_after_removal.context[
-            "page_obj"
-        ].paginator.count
+        posts_in_index_cont_after_response = (
+            response_after_removal.context["page_obj"].paginator.count)
         count_posts = (
             (posts_in_base_count, self.POST_IN_BASE),
             (posts_in_index_cont, self.POST_IN_INDEX),
-            (posts_in_base_count_after_removal, self.POST_IN_BASE - self.DELETE_POST),
+            (posts_in_base_count_after_removal,
+                self.POST_IN_BASE - self.DELETE_POST),
             (posts_in_index_cont_after_removal, self.POST_IN_INDEX),
-            (posts_in_base_count_after_response, self.POST_IN_BASE - self.DELETE_POST),
-            (posts_in_index_cont_after_response, self.POST_IN_INDEX - self.DELETE_POST),
+            (posts_in_base_count_after_response,
+                self.POST_IN_BASE - self.DELETE_POST),
+            (posts_in_index_cont_after_response,
+                self.POST_IN_INDEX - self.DELETE_POST),
         )
         for count, value in count_posts:
             with self.subTest(count=count):
@@ -312,7 +317,8 @@ class ViewsTests(TestCase):
             group=ViewsTests.group_1,
             image=ViewsTests.uploaded,
         )
-        response_follower = self.follower_user_client.get(reverse("posts:follow_index"))
+        response_follower = self.follower_user_client.get(
+            reverse("posts:follow_index"))
         self.assertEqual(
             len(response_follower.context["page_obj"]),
             count_post_follow + self.ADD_POST_OR_COMMENT,
@@ -332,5 +338,6 @@ class ViewsTests(TestCase):
             reverse("posts:follow_index")
         )
         self.assertEqual(
-            len(response_follower_after_add_post.context["page_obj"]), count_post_follow
+            len(response_follower_after_add_post.context["page_obj"]),
+            count_post_follow
         )
