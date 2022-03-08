@@ -147,4 +147,6 @@ CASHES = {
     }
 }
 
+COUNT_POST_IN_LIST = 10
+
 CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
