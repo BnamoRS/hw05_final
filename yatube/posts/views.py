@@ -41,8 +41,9 @@ def profile(request, username):
     page_obj = paginator.get_page(page_number)
     following = True
     if request.user.is_authenticated:
-        following = Follow.objects.filter(author_id=author.id,
-                                     user_id=request.user.id).exists()
+        following = Follow.objects.filter(
+            author_id=author.id,
+            user_id=request.user.id).exists()
     context = {
         "page_obj": page_obj,
         "author": author,
@@ -78,13 +79,6 @@ def post_create(request):
     return render(request, "posts/create_post.html", {"form": form})
 
 
-#  УТОЧНЕНИЕ ПО РЕВЬЮ. ПРОВЕРКА НА АВТОРИЗИРОВАННОГО ПОЛЬЗОВАТЕЛЯ.
-#  В post_edit(...) производится проверка является ли автор запроса
-#  автором поста < if request.user != post.author: >
-#  и если нет, автор запроса перенаправляется на страницу поста.
-#  Только автор может редактировать пост.
-#  Нужна ли дополнительная проверка на авторизированного пользователя,
-#  ведь пост может СОЗДАВАТЬ только авторизированный пользователь.
 @login_required
 def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
