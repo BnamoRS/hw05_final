@@ -33,7 +33,7 @@ class URLTest(TestCase):
         cls.not_public_urls = (
             (f"/posts/{cls.post.id}/edit/",
                 "posts/create_post.html",
-                f"/posts/{cls.post.id}/"),
+                f"/auth/login/?next=/posts/{cls.post.id}/edit/"),
             ("/create/",
                 "posts/create_post.html",
                 "/auth/login/?next=/create/"),

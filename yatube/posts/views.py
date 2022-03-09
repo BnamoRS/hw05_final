@@ -41,9 +41,8 @@ def profile(request, username):
     page_obj = paginator.get_page(page_number)
     following = True
     if request.user.is_authenticated:
-        if not Follow.objects.filter(author_id=author.id,
-                                     user_id=request.user.id).exists():
-            following = False
+        following = Follow.objects.filter(author_id=author.id,
+                                     user_id=request.user.id).exists()
     context = {
         "page_obj": page_obj,
         "author": author,
@@ -86,6 +85,7 @@ def post_create(request):
 #  Только автор может редактировать пост.
 #  Нужна ли дополнительная проверка на авторизированного пользователя,
 #  ведь пост может СОЗДАВАТЬ только авторизированный пользователь.
+@login_required
 def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if request.user != post.author:
@@ -135,7 +135,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    author = User.objects.prefetch_related("following").get(username=username)
+    author = get_object_or_404(User, username=username)
     if request.user.id == author.id:
         return redirect("posts:profile", username)
     Follow.objects.get_or_create(user=request.user, author=author)
