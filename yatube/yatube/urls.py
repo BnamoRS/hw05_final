@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
-import debug_toolbar
+
 
 urlpatterns = [
     path("", include("posts.urls", namespace="posts")),
@@ -19,8 +19,9 @@ handler500 = 'core.views.server_error'
 handler403 = 'core.views.permission_denied'
 
 if settings.DEBUG:
-    urlpatterns += (path('__debug__/', include(debug_toolbar.urls)),)
+    import debug_toolbar
     
     urlpatterns += static(
         settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
     )
+    urlpatterns += (path('__debug__/', include(debug_toolbar.urls)),)
