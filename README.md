@@ -34,6 +34,18 @@
 	`python manage.py createsuperuser`;
 8. Главная страница проекта доступена в браузере по адресу `127.0.0.1:8000`.
 
+### Заполнить сайт тестовыми записями:
+* Открываем интерактивный сеанс  Django:
+	`python manage.py shell`
+* в открывшемся терминале:
+    ```
+    >>> from django.contrib.contenttypes.models import ContentType 
+    >>> ContentType.objects.all().delete()
+    >>> quit()
+    ```
+* Загружаем данные:
+	`python manage.py loaddata dump.json`
+
 ## Автор.
 
 ***Роман Буцких***
